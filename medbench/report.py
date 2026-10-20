@@ -273,7 +273,13 @@ def write_report(runs: List[Path], data_dir: Path, out: Path, title: str, notes:
     w("uv venv && uv pip install -e '.[test]'")
     w("medbench prepare                       # 下載、驗證 SHA-256、正規化成 data/*.jsonl")
     for s in S:
-        w("medbench run --config configs/%s.json   # 可中斷續跑" % s["config"]["name"])
+        launch = s["config"].get("launch")
+        if launch:
+            w("# %s 需要整張 GPU：暫停正式服務、啟動受測伺服器、跑完自動恢復" % s["label"])
+            w("PARALLEL=%s STRATA_CONFIG=%s scripts/strata_window.sh configs/%s.json" % (
+                launch.get("parallel", 1), launch.get("engine_config", "<engine config>"), s["config"]["name"]))
+        else:
+            w("medbench run --config configs/%s.json   # 可中斷續跑" % s["config"]["name"])
     w("medbench score %s" % " ".join("results/%s" % s["config"]["name"] for s in S))
     w("medbench report %s --notes reports/notes.md" % " ".join("results/%s" % s["config"]["name"] for s in S))
     w("```")
