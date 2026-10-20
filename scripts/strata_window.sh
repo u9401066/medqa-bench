@@ -10,7 +10,7 @@
 #   PROD_PATTERN  command-line pattern of the production llama-server                           [Ternary-Bonsai-2-27B]
 #   PROD_URL      production health URL                                                         [http://127.0.0.1:8081/health]
 #   STRATA_HOME   Strata Terminal folder (serve/server.py, python/)                             [~/.local/share/strata/terminal/0.1.45.3]
-#   STRATA_CONFIG Strata run config (exe, args, tokenizer, port)                                [~/.local/share/strata/install/strata-iq3_s.json]
+#   STRATA_CONFIG Strata run config (exe, args, tokenizer, port)                                [configs/engine/strata-iq3_s.json]
 #   PARALLEL      simultaneous requests in the engine (Strata --parallel; 1 = one at a time)   [3]
 #   LOG_DIR       logs                                                                          [results/logs]
 set -u
@@ -21,7 +21,7 @@ PROD_REPO="${PROD_REPO:-$HOME/llmapi_server}"
 PROD_PATTERN="${PROD_PATTERN:-Ternary-Bonsai-2-27B}"
 PROD_URL="${PROD_URL:-http://127.0.0.1:8081/health}"
 STRATA_HOME="${STRATA_HOME:-$HOME/.local/share/strata/terminal/0.1.45.3}"
-STRATA_CONFIG="${STRATA_CONFIG:-$HOME/.local/share/strata/install/strata-iq3_s.json}"
+STRATA_CONFIG="${STRATA_CONFIG:-$HERE/configs/engine/strata-iq3_s.json}"
 PARALLEL="${PARALLEL:-3}"
 LOG_DIR="${LOG_DIR:-$HERE/results/logs}"
 PAUSE="$PROD_REPO/config/bonsai.pause"

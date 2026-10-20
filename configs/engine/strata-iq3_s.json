@@ -1,0 +1,41 @@
+{
+ "exe": "/home/eric/strata-engine/x/strata",
+ "args": [
+  "--pack",
+  "/home/eric/strata-models/packs/iq3_s",
+  "--native",
+  "/home/eric/strata-models/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+  "--ple-gguf",
+  "/home/eric/strata-models/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
+  "--expert-profile",
+  "/home/eric/.local/share/strata/terminal/0.1.45.3/data/expert-profile.bin",
+  "--expert-cache",
+  "auto",
+  "--prefill",
+  "auto",
+  "--spec",
+  "4",
+  "--spec-min-p",
+  "0.5",
+  "--mtp",
+  "/home/eric/strata-models/mtp/rt",
+  "--max-context",
+  "131072",
+  "--kv",
+  "int8",
+  "--resident-experts"
+ ],
+ "cwd": "/home/eric/.local/share/strata/terminal/0.1.45.3",
+ "tokenizer": "/home/eric/strata-models/packs/iq3_s/tokenizer",
+ "model_name": "qwen3.8-flash-next-iq3_s",
+ "log": "/home/eric/.local/share/strata/install/strata-iq3_s.log",
+ "lib_dirs": [
+  "/home/eric/strata-engine/x"
+ ],
+ "port": 8090,
+ "cuda": 12,
+ "gpu": 0,
+ "gpus_asked": true,
+ "host": "127.0.0.1",
+ "open_browser": false
+}
