@@ -3,15 +3,15 @@
 # 1. pause the production llama-server (Bonsai on :8081), 2. start the server under test, 3. run medbench (resumable),
 # 4. ALWAYS stop the test server and restore production, also after an error, Ctrl-C or SIGTERM.
 #
-#   PARALLEL=3 scripts/strata_window.sh configs/strata-flashnext-iq3s-medium.json [extra medbench run args...]
+#   PARALLEL=1 scripts/strata_window.sh configs/strata-flashnext-iq3s-medium.json [extra medbench run args...]
 #
 # Environment (defaults match the llm01 server this benchmark was run on):
 #   PROD_REPO     llmapi_server checkout with scripts/start_bonsai.sh and config/bonsai.pause   [~/llmapi_server]
 #   PROD_PATTERN  command-line pattern of the production llama-server                           [Ternary-Bonsai-2-27B]
 #   PROD_URL      production health URL                                                         [http://127.0.0.1:8081/health]
 #   STRATA_HOME   Strata Terminal folder (serve/server.py, python/)                             [~/.local/share/strata/terminal/0.1.45.3]
-#   STRATA_CONFIG Strata run config (exe, args, tokenizer, port)                                [configs/engine/strata-iq3_s.json]
-#   PARALLEL      simultaneous requests in the engine (Strata --parallel; 1 = one at a time)   [3]
+#   STRATA_CONFIG Strata run config (exe, args, tokenizer, port)                                [configs/engine/strata-iq3_s-32k.json]
+#   PARALLEL      simultaneous requests in the engine (Strata --parallel; 1 = one at a time)   [1]
 #   LOG_DIR       logs                                                                          [results/logs]
 set -u
 CFG="${1:?usage: strata_window.sh <medbench config> [medbench run args...]}"
@@ -21,9 +21,11 @@ PROD_REPO="${PROD_REPO:-$HOME/llmapi_server}"
 PROD_PATTERN="${PROD_PATTERN:-Ternary-Bonsai-2-27B}"
 PROD_URL="${PROD_URL:-http://127.0.0.1:8081/health}"
 STRATA_HOME="${STRATA_HOME:-$HOME/.local/share/strata/terminal/0.1.45.3}"
-STRATA_CONFIG="${STRATA_CONFIG:-$HERE/configs/engine/strata-iq3_s.json}"
-PARALLEL="${PARALLEL:-3}"
+STRATA_CONFIG="${STRATA_CONFIG:-$HERE/configs/engine/strata-iq3_s-32k.json}"
+PARALLEL="${PARALLEL:-1}"
 LOG_DIR="${LOG_DIR:-$HERE/results/logs}"
+STRATA_CONFIG="$(realpath "$STRATA_CONFIG")"   # the server starts in STRATA_HOME
+CFG="$(realpath "$CFG")"
 PAUSE="$PROD_REPO/config/bonsai.pause"
 URL="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["base_url"].rstrip("/"))' "$CFG")"
 mkdir -p "$LOG_DIR"

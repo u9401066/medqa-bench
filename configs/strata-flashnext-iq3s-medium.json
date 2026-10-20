@@ -3,7 +3,7 @@
  "label": "Strata Qwen3.8-Flash-Next 125B IQ3_S",
  "base_url": "http://127.0.0.1:8090",
  "model": "qwen3.8-flash-next-iq3_s",
- "concurrency": 3,
+ "concurrency": 1,
  "timeout_s": 3600,
  "request": {
   "max_tokens": 16384,
@@ -13,13 +13,26 @@
   "min_p": 0.05,
   "reasoning_effort": "medium"
  },
- "server_info": ["/props", "/v1/models", "/status", "/config"],
- "processes": ["strata-engine/x/strata", "serve/server.py"],
+ "server_info": [
+  "/props",
+  "/v1/models",
+  "/status",
+  "/config"
+ ],
+ "processes": [
+  "strata-engine/x/strata",
+  "serve/server.py"
+ ],
  "system": {
   "model": "Qwen3.8-Flash-Next-GSQ-RCO（MoE 約 125B 總參數）",
   "weights": "IQ3_S（GSQ-RCO 重量化），GGUF 兩片共約 83.6 GB",
-  "engine": "Strata engine（strata 0.1.45.3，CUDA 12.9 build）+ MTP 推測解碼",
-  "placement": "注意力/共用權重與熱門專家在 GPU，其餘專家放 RAM 依需求搬入（expert cache auto）",
-  "sampling": "temperature 1.0、top_p 0.95、top_k 20、min_p 0.05（與 Bonsai 相同），逐題 seed"
+  "engine": "Strata 0.1.45.3（engine 自行編譯 CUDA 12.9）+ MTP 推測解碼（--spec 4）",
+  "placement": "低 RAM 模式 resident 變體：注意力/共用權重與 GPU 專家快取（約 10.2 GiB）在 VRAM，其餘專家常駐 RAM；context 32,768、KV int8、一次一個請求（實測 parallel 3 總吞吐較低）",
+  "sampling": "temperature 1.0、top_p 0.95、top_k 20、min_p 0.05（與 Bonsai 相同），逐題 seed；關閉 Strata 的 answer_room 思考上限"
+ },
+ "launch": {
+  "engine_config": "configs/engine/strata-iq3_s-32k.json",
+  "parallel": 1,
+  "changes_from_setup": "exe/lib_dirs -> self-built CUDA 12.9 engine; --max-context 131072 -> 32768; answer_room false"
  }
 }

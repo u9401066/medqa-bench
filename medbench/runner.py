@@ -207,4 +207,4 @@ async def run(cfg: Dict[str, Any], data_dir: Path, datasets: List[str], out: Pat
             mon.stop()
             manifest["sessions"][-1]["end"] = time.time()
             manifest_path.write_text(json.dumps(manifest, indent=1, ensure_ascii=False))
-    return {"items": len(items), "ran": len(todo)}
+    return {"items": len(items), "attempted": len(todo), "done": state["done"]}

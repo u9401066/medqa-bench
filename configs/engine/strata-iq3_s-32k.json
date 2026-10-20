@@ -20,7 +20,7 @@
   "--mtp",
   "/home/eric/strata-models/mtp/rt",
   "--max-context",
-  "131072",
+  "32768",
   "--kv",
   "int8",
   "--resident-experts"
@@ -37,5 +37,6 @@
  "gpu": 0,
  "gpus_asked": true,
  "host": "127.0.0.1",
- "open_browser": false
+ "open_browser": false,
+ "answer_room": false
 }

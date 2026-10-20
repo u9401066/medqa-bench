@@ -72,7 +72,7 @@ medbench report results/bonsai27b-pq2-medium results/strata-flashnext-iq3s-mediu
 [scripts/strata_window.sh](scripts/strata_window.sh) 會暫停正式服務、啟動受測伺服器、跑 medbench，**無論成功、失敗或被中斷都會停掉受測伺服器並恢復正式服務**：
 
 ```bash
-PARALLEL=3 STRATA_CONFIG=configs/engine/strata-iq3_s.json scripts/strata_window.sh configs/strata-flashnext-iq3s-medium.json
+PARALLEL=1 STRATA_CONFIG=configs/engine/strata-iq3_s-32k.json scripts/strata_window.sh configs/strata-flashnext-iq3s-medium.json
 ```
 
 ## 限制
