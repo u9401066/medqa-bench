@@ -144,7 +144,7 @@ async def run(cfg: Dict[str, Any], data_dir: Path, datasets: List[str], out: Pat
         mon = Monitor(out / "resources.csv", cfg.get("processes") or [], state=lambda: dict(state),
                       slots_url=cfg["base_url"].rstrip("/") + slots if slots else None).start()
         # Idle samples before the first request give the power baseline (energy above idle).
-        session: Dict[str, Any] = {"baseline_start": time.time(), "todo": len(todo)}
+        session: Dict[str, Any] = {"baseline_start": time.time(), "todo": len(todo), "git_rev": manifest["git_rev"]}
         if todo and baseline_s > 0:
             await asyncio.sleep(baseline_s)
         session["start"] = time.time()
