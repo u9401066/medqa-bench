@@ -142,3 +142,49 @@ def test_failed_items_are_retried_on_resume(tmp_path, fake_server):
                  "--out", str(out), "--baseline-s", "0"]) == 0
     s = score_run(out, data)
     assert s["datasets"]["pubmedqa"]["errors"] == 0 and s["datasets"]["pubmedqa"]["correct"] == 2
+
+
+class SlowOpenAI(FakeOpenAI):
+    def do_POST(self):  # noqa: N802
+        import time
+
+        time.sleep(0.5)
+        super().do_POST()
+
+
+def test_sigint_stops_cleanly_even_when_ignored(tmp_path):
+    import signal
+    import subprocess
+    import sys
+    import time
+
+    srv = ThreadingHTTPServer(("127.0.0.1", 0), SlowOpenAI)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        data = _data(tmp_path)
+        cfg = _cfg(tmp_path, "http://127.0.0.1:%d" % srv.server_address[1], "slow")
+        cfg.write_text(json.dumps({**json.loads(cfg.read_text()), "concurrency": 1}))
+        out = tmp_path / "results" / "slow"
+        # a background shell starts its children with SIGINT ignored; the runner must still stop on it
+        p = subprocess.Popen([sys.executable, "-m", "medbench.cli", "--data", str(data), "run", "--config", str(cfg), "--datasets",
+                              "medqa_usmle", "--out", str(out), "--baseline-s", "0"], preexec_fn=lambda: signal.signal(signal.SIGINT, signal.SIG_IGN),
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        time.sleep(2.0)
+        p.send_signal(signal.SIGINT)
+        stdout, _ = p.communicate(timeout=30)
+        assert p.returncode == 0, stdout
+        assert "stopped by signal" in stdout
+        m = json.loads((out / "manifest.json").read_text())
+        assert "end" in m["sessions"][-1]
+        n = len((out / "predictions.jsonl").read_text().splitlines())
+        assert 1 <= n < 6
+    finally:
+        srv.shutdown()
+
+
+def test_session_without_end_is_closed_at_last_item():
+    from medbench.score import _close_sessions
+
+    ok = [{"t_start": 10.0, "latency_s": 5.0}, {"t_start": 12.0, "latency_s": 9.0}, {"t_start": 105.0, "latency_s": 1.0}]
+    out = _close_sessions([{"baseline_start": 0, "start": 5.0}, {"baseline_start": 90.0, "start": 100.0, "end": 110.0}], ok)
+    assert out[0]["end"] == 21.0 and out[0]["end_inferred"] and out[1]["end"] == 110.0

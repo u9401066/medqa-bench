@@ -155,6 +155,20 @@ def _external(act: List[Dict[str, str]]) -> Optional[Dict[str, float]]:
     return {"samples": len(pairs), "share_with_other_requests": sum(1 for e in extra if e > 0) / len(pairs), "mean_other_requests": statistics.mean(extra)}
 
 
+def _close_sessions(sessions: List[Dict[str, Any]], ok: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """A session that ended without writing its end time (killed process) ends at its last completed item."""
+    out = []
+    for i, s in enumerate(sessions):
+        s = dict(s)
+        if "end" not in s:
+            nxt = sessions[i + 1].get("baseline_start", sessions[i + 1]["start"]) if i + 1 < len(sessions) else float("inf")
+            ends = [r["t_start"] + r["latency_s"] for r in ok if s["start"] <= r["t_start"] < nxt]
+            if ends:
+                s["end"], s["end_inferred"] = max(ends), True
+        out.append(s)
+    return out
+
+
 def score_run(run: Path, data_dir: Path) -> Dict[str, Any]:
     manifest = json.loads((run / "manifest.json").read_text())
     preds = load_predictions(run)
@@ -187,7 +201,7 @@ def score_run(run: Path, data_dir: Path) -> Dict[str, Any]:
         })
         result["datasets"][name] = d
     ok = [r for r in all_rows if not r.get("error")]
-    sessions = manifest.get("sessions", [])
+    sessions = _close_sessions(manifest.get("sessions", []), ok)
     busy = sum(max(0.0, s.get("end", s["start"]) - s["start"]) for s in sessions)
     tokens = sum(r["completion_tokens"] for r in ok)
     result["overall"] = {**_acc(all_rows), "wall_s": busy, "completion_tokens": tokens,
@@ -202,7 +216,8 @@ def score_run(run: Path, data_dir: Path) -> Dict[str, Any]:
         k = result["overall"]["correct"]
         res["gpu_energy_wh_per_correct"] = res["gpu_energy_wh"] / k if k else None
         result["resources"] = res
-    result["manifest"] = {k: manifest.get(k) for k in ("medbench_version", "git_rev", "prompt_version", "host", "server", "datasets", "sessions")}
+    result["manifest"] = {k: manifest.get(k) for k in ("medbench_version", "git_rev", "prompt_version", "host", "server", "datasets")}
+    result["manifest"]["sessions"] = sessions
     (run / "summary.json").write_text(json.dumps(result, indent=1, ensure_ascii=False, default=float))
     return result
 

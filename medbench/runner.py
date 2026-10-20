@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import platform
+import signal
 import subprocess
 import time
 from pathlib import Path
@@ -184,9 +185,25 @@ async def run(cfg: Dict[str, Any], data_dir: Path, datasets: List[str], out: Pat
                         el = time.time() - t_start
                         print("[%s] %d/%d done, %.0f s elapsed" % (cfg["name"], n, len(items), el), flush=True)
 
+        # SIGINT/SIGTERM stop the run cleanly (in-flight items are dropped and redone on resume). Explicit handlers, because a
+        # background shell starts the process with SIGINT ignored.
+        work = asyncio.ensure_future(asyncio.gather(*[one(it) for it in todo]))
+        loop = asyncio.get_running_loop()
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            try:
+                loop.add_signal_handler(sig, work.cancel)
+            except (NotImplementedError, RuntimeError):
+                pass
         try:
-            await asyncio.gather(*[one(it) for it in todo])
+            await work
+        except asyncio.CancelledError:
+            print("[%s] stopped by signal; %d/%d done, resume with the same command" % (cfg["name"], state["done"], len(items)), flush=True)
         finally:
+            for sig in (signal.SIGINT, signal.SIGTERM):
+                try:
+                    loop.remove_signal_handler(sig)
+                except (NotImplementedError, RuntimeError):
+                    pass
             mon.stop()
             manifest["sessions"][-1]["end"] = time.time()
             manifest_path.write_text(json.dumps(manifest, indent=1, ensure_ascii=False))
