@@ -1,0 +1,25 @@
+{
+ "name": "bonsai27b-pq2-medium",
+ "label": "Bonsai 27B PQ2_0",
+ "base_url": "http://127.0.0.1:8081",
+ "model": "bonsai",
+ "concurrency": 3,
+ "timeout_s": 3600,
+ "request": {
+  "max_tokens": 16384,
+  "temperature": 1.0,
+  "top_p": 0.95,
+  "top_k": 20,
+  "min_p": 0.05,
+  "chat_template_kwargs": {"reasoning_effort": "medium"}
+ },
+ "server_info": ["/props", "/v1/models"],
+ "processes": ["Ternary-Bonsai-2-27B"],
+ "system": {
+  "model": "Ternary-Bonsai-2-27B-Abliterated-v2（Qwen3.8-27B 架構，dense 27B）",
+  "weights": "PQ2_0 三元（ternary）權重 + MTP 頭，GGUF 7.1 GiB（7,303 MiB）",
+  "engine": "PrismML llama.cpp fork prism-b10787（llama-server）+ MTP 推測解碼",
+  "placement": "全部層在 GPU（-ngl 99），KV 131,072 tokens / 4 slots，flash-attn",
+  "sampling": "temperature 1.0、top_p 0.95、top_k 20、min_p 0.05（模型 GGUF 內建預設），逐題 seed"
+ }
+}
