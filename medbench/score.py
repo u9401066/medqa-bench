@@ -64,6 +64,14 @@ def macro_f1(golds: List[str], preds: List[Optional[str]], labels: List[str]) ->
     return sum(f1s) / len(f1s)
 
 
+def _counts(xs) -> Dict[str, int]:
+    out: Dict[str, int] = {}
+    for x in xs:
+        k = "none" if x is None else str(x)
+        out[k] = out.get(k, 0) + 1
+    return dict(sorted(out.items()))
+
+
 def _acc(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
     n = len(rows)
     k = sum(1 for r in rows if r.get("correct"))
@@ -173,6 +181,9 @@ def score_run(run: Path, data_dir: Path) -> Dict[str, Any]:
             "prompt_tokens_mean": statistics.mean([r["prompt_tokens"] for r in ok if r.get("prompt_tokens") is not None] or [0]),
             "decode_tps_median": _pct([r.get("decode_tps") for r in ok], 0.5),
             "subsets": _subsets(name, rows, items),
+            "pred_distribution": _counts(r.get("pred") for r in rows),
+            "gold_distribution": _counts(r["gold"] for r in rows),
+            "confusion": {g: _counts(r.get("pred") for r in rows if r["gold"] == g) for g in sorted({r["gold"] for r in rows})},
         })
         result["datasets"][name] = d
     ok = [r for r in all_rows if not r.get("error")]
@@ -188,6 +199,8 @@ def score_run(run: Path, data_dir: Path) -> Dict[str, Any]:
     res = _resources(run, sessions)
     if res:
         res["gpu_energy_wh_per_question"] = res["gpu_energy_wh"] / len(ok) if ok else None
+        k = result["overall"]["correct"]
+        res["gpu_energy_wh_per_correct"] = res["gpu_energy_wh"] / k if k else None
         result["resources"] = res
     result["manifest"] = {k: manifest.get(k) for k in ("medbench_version", "git_rev", "prompt_version", "host", "server", "datasets", "sessions")}
     (run / "summary.json").write_text(json.dumps(result, indent=1, ensure_ascii=False, default=float))

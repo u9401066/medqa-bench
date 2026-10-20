@@ -185,6 +185,31 @@ def write_report(runs: List[Path], data_dir: Path, out: Path, title: str, notes:
             w("| %s | %s | %s |" % (n, t, " | ".join(str(s["datasets"][n][key]) for s in S)))
     w("")
 
+    w("### 2.4 答案分佈與混淆")
+    w("")
+    w("選擇題預測答案分佈（檢查位置偏誤；none = 無可解析答案）：")
+    w("")
+    w("| 資料集 | 系統 | %s |" % " | ".join(["A", "B", "C", "D", "none"]))
+    w("|---|---|%s|" % "|".join("---:" for _ in range(5)))
+    for n in names:
+        if S[0]["datasets"][n]["gold_distribution"].keys() <= {"A", "B", "C", "D", "E"}:
+            w("| %s | 正確答案 | %s |" % (n, " | ".join(str(S[0]["datasets"][n]["gold_distribution"].get(k, 0)) for k in ["A", "B", "C", "D", "none"])))
+            for s in S:
+                w("| %s | %s | %s |" % (n, s["label"], " | ".join(str(s["datasets"][n]["pred_distribution"].get(k, 0)) for k in ["A", "B", "C", "D", "none"])))
+    w("")
+    if "pubmedqa" in names:
+        w("PubMedQA 混淆矩陣（列 = 正確答案，欄 = 模型回答）：")
+        w("")
+        for s in S:
+            cm = s["datasets"]["pubmedqa"]["confusion"]
+            w("**%s**" % s["label"])
+            w("")
+            w("| 正確 \\ 回答 | yes | no | maybe | none |")
+            w("|---|---:|---:|---:|---:|")
+            for gl in ("yes", "no", "maybe"):
+                w("| %s | %s |" % (gl, " | ".join(str(cm.get(gl, {}).get(k, 0)) for k in ("yes", "no", "maybe", "none"))))
+            w("")
+
     # ---- speed
     w("## 3. 速度")
     w("")
@@ -224,6 +249,7 @@ def write_report(runs: List[Path], data_dir: Path, out: Path, title: str, notes:
              ("GPU 能耗總計（Wh）", lambda r: _f(g(r, "gpu_energy_wh"), 0)),
              ("GPU 能耗（扣閒置，Wh）", lambda r: _f(g(r, "gpu_energy_wh_above_idle"), 0)),
              ("GPU 能耗 / 題（Wh）", lambda r: _f(g(r, "gpu_energy_wh_per_question"), 2)),
+             ("GPU 能耗 / 答對一題（Wh）", lambda r: _f(g(r, "gpu_energy_wh_per_correct"), 2)),
              ("伺服器行程 RSS 平均 / 峰值", lambda r: "%s / %s" % (_gib(g(r, "server_rss_mib", "mean")), _gib(g(r, "server_rss_mib", "peak")))),
              ("系統 RAM 使用 平均 / 峰值", lambda r: "%s / %s" % (_gib(g(r, "ram_used_mib", "mean")), _gib(g(r, "ram_used_mib", "peak")))),
              ("CPU 使用率平均（全機）", lambda r: _f(g(r, "cpu_pct_mean"), 0) + "%"),
