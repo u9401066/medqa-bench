@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "medqa-bench"
+version = "0.1.0"
+description = "Reproducible medical question-answering benchmark for OpenAI-compatible LLM servers: pinned datasets, resumable runs, answer parsing, accuracy with confidence intervals, paired tests, speed and resource usage, and a Markdown report."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "medqa-bench contributors" }]
+dependencies = [
+    "httpx>=0.27",
+    "pyarrow>=15",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+medbench = "medbench.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["medbench"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
