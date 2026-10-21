@@ -64,6 +64,19 @@ def macro_f1(golds: List[str], preds: List[Optional[str]], labels: List[str]) ->
     return sum(f1s) / len(f1s)
 
 
+def _timings(ok: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    """llama-server's own per-request timings: prefill and decode speed without network/queueing, speculative-draft acceptance."""
+    t = [r["timings"] for r in ok if r.get("timings")]
+    if not t:
+        return None
+    pre = [x["prompt_n"] / x["prompt_ms"] * 1000 for x in t if x.get("prompt_ms") and x.get("prompt_n")]
+    dec = [x["predicted_n"] / x["predicted_ms"] * 1000 for x in t if x.get("predicted_ms") and x.get("predicted_n", 0) > 1]
+    dn = sum(x.get("draft_n") or 0 for x in t)
+    da = sum(x.get("draft_n_accepted") or 0 for x in t)
+    return {"n": len(t), "prefill_tps_median": _pct(pre, 0.5), "decode_tps_median": _pct(dec, 0.5),
+            "draft_acceptance": da / dn if dn else None, "draft_tokens": dn}
+
+
 def _counts(xs) -> Dict[str, int]:
     out: Dict[str, int] = {}
     for x in xs:
@@ -195,6 +208,7 @@ def score_run(run: Path, data_dir: Path) -> Dict[str, Any]:
             "prompt_tokens_mean": statistics.mean([r["prompt_tokens"] for r in ok if r.get("prompt_tokens") is not None] or [0]),
             "decode_tps_median": _pct([r.get("decode_tps") for r in ok], 0.5),
             "subsets": _subsets(name, rows, items),
+            "server_timings": _timings(ok),
             "pred_distribution": _counts(r.get("pred") for r in rows),
             "gold_distribution": _counts(r["gold"] for r in rows),
             "confusion": {g: _counts(r.get("pred") for r in rows if r["gold"] == g) for g in sorted({r["gold"] for r in rows})},

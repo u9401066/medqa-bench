@@ -220,9 +220,17 @@ def write_report(runs: List[Path], data_dir: Path, out: Path, title: str, notes:
                 ("輸出 tokens（中位/平均）", lambda d: "%s / %s" % (_f(d["completion_tokens"]["median"], 0), _f(d["completion_tokens"]["mean"], 0))),
                 ("TTFT 中位（s）", lambda d: _f(d["ttft_s_median"], 2)),
                 ("每題延遲 中位 / P90（s）", lambda d: "%s / %s" % (_f(d["latency_s"]["median"]), _f(d["latency_s"]["p90"]))),
-                ("單請求解碼中位（tok/s）", lambda d: _f(d["decode_tps_median"])))
+                ("單請求解碼中位（tok/s）", lambda d: _f(d["decode_tps_median"])),
+                ("伺服器端 prefill / 解碼中位（tok/s）", lambda d: "%s / %s" % (_f((d.get("server_timings") or {}).get("prefill_tps_median"), 0),
+                                                                    _f((d.get("server_timings") or {}).get("decode_tps_median")))),
+                ("推測解碼草稿接受率", lambda d: _p((d.get("server_timings") or {}).get("draft_acceptance"))))
         for t, fn in rows:
             w("| %s | %s | %s |" % (n, t, " | ".join(fn(s["datasets"][n]) for s in S)))
+    w("")
+    w("「單請求解碼」以用戶端收到的串流計時（含網路與排隊）；「伺服器端」為 llama-server 自己回報的 timings（Strata 不回報，顯示 —）。")
+    w("")
+    w("| 資料集 | 指標 | %s |" % " | ".join(labels))
+    w("|---|---|%s|" % "|".join("---:" for _ in S))
     w("| 全部 | 實際執行時間 | %s |" % " | ".join("%.2f h" % (s["overall"]["wall_s"] / 3600) for s in S))
     w("| 全部 | 總輸出 tokens | %s |" % " | ".join("{:,}".format(s["overall"]["completion_tokens"]) for s in S))
     w("| 全部 | 總吞吐（tok/s，含併發） | %s |" % " | ".join(_f(s["overall"]["throughput_tok_s"]) for s in S))
