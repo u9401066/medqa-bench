@@ -227,7 +227,7 @@ def write_report(runs: List[Path], data_dir: Path, out: Path, title: str, notes:
         for t, fn in rows:
             w("| %s | %s | %s |" % (n, t, " | ".join(fn(s["datasets"][n]) for s in S)))
     w("")
-    w("「單請求解碼」以用戶端收到的串流計時（含網路與排隊）；「伺服器端」為 llama-server 自己回報的 timings（Strata 不回報，顯示 —）。")
+    w("「單請求解碼」以用戶端收到的串流計時（含網路與排隊）；「伺服器端」為伺服器在串流最後回報的 llama.cpp 格式 timings（prompt_n/prompt_ms、predicted_n/predicted_ms、draft_n/draft_n_accepted；沒有回報時顯示 —）。")
     w("")
     w("| 資料集 | 指標 | %s |" % " | ".join(labels))
     w("|---|---|%s|" % "|".join("---:" for _ in S))
@@ -266,7 +266,7 @@ def write_report(runs: List[Path], data_dir: Path, out: Path, title: str, notes:
     for t, fn in rrows:
         w("| %s | %s |" % (t, " | ".join(fn(r) for r in R)))
     w("")
-    w("註：VRAM、功耗與系統 RAM 為整機量測，包含同時常駐的其他服務（見第 6 節）。")
+    w("註：VRAM、功耗與系統 RAM 為整機量測，包含同時常駐的其他服務（見第 5 節）；能耗只計 GPU，不含 CPU 與其他元件。")
     w("")
 
     if notes and notes.exists():
