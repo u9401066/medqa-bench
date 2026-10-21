@@ -1,0 +1,1142 @@
+{
+ "runs": [
+  {
+   "run": "bonsai27b-pq2-medium",
+   "label": "Bonsai 27B PQ2_0",
+   "config": {
+    "name": "bonsai27b-pq2-medium",
+    "label": "Bonsai 27B PQ2_0",
+    "base_url": "http://127.0.0.1:8081",
+    "model": "bonsai",
+    "concurrency": 3,
+    "timeout_s": 3600,
+    "request": {
+     "max_tokens": 16384,
+     "temperature": 1.0,
+     "top_p": 0.95,
+     "top_k": 20,
+     "min_p": 0.05,
+     "chat_template_kwargs": {
+      "reasoning_effort": "medium"
+     }
+    },
+    "server_info": [
+     "/props",
+     "/v1/models"
+    ],
+    "processes": [
+     "Ternary-Bonsai-2-27B"
+    ],
+    "system": {
+     "model": "Ternary-Bonsai-2-27B-Abliterated-v2（Qwen3.8-27B 架構，dense 27B）",
+     "weights": "PQ2_0 三元（ternary）權重 + MTP 頭，GGUF 7.1 GiB（7,303 MiB）",
+     "engine": "PrismML llama.cpp fork prism-b10787（llama-server）+ MTP 推測解碼",
+     "placement": "全部層在 GPU（-ngl 99），KV 131,072 tokens / 4 slots，flash-attn",
+     "sampling": "temperature 1.0、top_p 0.95、top_k 20、min_p 0.05（模型 GGUF 內建預設），逐題 seed"
+    }
+   },
+   "datasets": {
+    "medqa_usmle": {
+     "n": 1273,
+     "correct": 1079,
+     "acc": 0.8476040848389631,
+     "ci95": [
+      0.8268171189834755,
+      0.8662994726217127
+     ],
+     "expected_items": 1273,
+     "missing_items": 0,
+     "errors": 0,
+     "no_answer": 2,
+     "truncated": 1,
+     "latency_s": {
+      "mean": 22.707726630007855,
+      "median": 18.081,
+      "p90": 40.1372
+     },
+     "ttft_s_median": 0.486,
+     "completion_tokens": {
+      "mean": 1799.5278868813825,
+      "median": 1428.0
+     },
+     "prompt_tokens_mean": 274.8813825608798,
+     "decode_tps_median": 81.73,
+     "subsets": {
+      "step1": {
+       "n": 679,
+       "correct": 582,
+       "acc": 0.8571428571428571,
+       "ci95": [
+        0.8288107315573973,
+        0.8814566280059469
+       ]
+      },
+      "step2&3": {
+       "n": 594,
+       "correct": 497,
+       "acc": 0.8367003367003367,
+       "ci95": [
+        0.8048279012694642,
+        0.8642458039039699
+       ]
+      }
+     },
+     "server_timings": {
+      "n": 1273,
+      "prefill_tps_median": 1242.6543476301824,
+      "decode_tps_median": 81.78593662679593,
+      "draft_acceptance": 0.5993807154939205,
+      "draft_tokens": 2083372
+     },
+     "pred_distribution": {
+      "A": 340,
+      "B": 317,
+      "C": 364,
+      "D": 250,
+      "none": 2
+     },
+     "gold_distribution": {
+      "A": 353,
+      "B": 309,
+      "C": 346,
+      "D": 265
+     },
+     "confusion": {
+      "A": {
+       "A": 295,
+       "B": 18,
+       "C": 24,
+       "D": 14,
+       "none": 2
+      },
+      "B": {
+       "A": 16,
+       "B": 266,
+       "C": 13,
+       "D": 14
+      },
+      "C": {
+       "A": 11,
+       "B": 17,
+       "C": 307,
+       "D": 11
+      },
+      "D": {
+       "A": 18,
+       "B": 16,
+       "C": 20,
+       "D": 211
+      }
+     }
+    },
+    "medqa_twmle": {
+     "n": 1413,
+     "correct": 1095,
+     "acc": 0.7749469214437368,
+     "ci95": [
+      0.7524433624183711,
+      0.7959595623615832
+     ],
+     "expected_items": 1413,
+     "missing_items": 0,
+     "errors": 0,
+     "no_answer": 3,
+     "truncated": 3,
+     "latency_s": {
+      "mean": 19.117879688605804,
+      "median": 14.501,
+      "p90": 34.76059999999999
+     },
+     "ttft_s_median": 0.41,
+     "completion_tokens": {
+      "mean": 1524.897381457891,
+      "median": 1131.0
+     },
+     "prompt_tokens_mean": 158.40481245576788,
+     "decode_tps_median": 81.46,
+     "subsets": {
+      "standalone": {
+       "n": 1389,
+       "correct": 1082,
+       "acc": 0.7789776817854571,
+       "ci95": [
+        0.7564036480897354,
+        0.800012873732113
+       ]
+      },
+      "depends_on_previous (承上題)": {
+       "n": 24,
+       "correct": 13,
+       "acc": 0.5416666666666666,
+       "ci95": [
+        0.35074865225073715,
+        0.7210866638699854
+       ]
+      }
+     },
+     "server_timings": {
+      "n": 1413,
+      "prefill_tps_median": 832.9206249155824,
+      "decode_tps_median": 81.55691129635652,
+      "draft_acceptance": 0.5879426348649356,
+      "draft_tokens": 1980018
+     },
+     "pred_distribution": {
+      "A": 339,
+      "B": 367,
+      "C": 390,
+      "D": 314,
+      "none": 3
+     },
+     "gold_distribution": {
+      "A": 335,
+      "B": 373,
+      "C": 365,
+      "D": 340
+     },
+     "confusion": {
+      "A": {
+       "A": 255,
+       "B": 24,
+       "C": 30,
+       "D": 26
+      },
+      "B": {
+       "A": 29,
+       "B": 295,
+       "C": 25,
+       "D": 24
+      },
+      "C": {
+       "A": 23,
+       "B": 21,
+       "C": 301,
+       "D": 20
+      },
+      "D": {
+       "A": 32,
+       "B": 27,
+       "C": 34,
+       "D": 244,
+       "none": 3
+      }
+     }
+    },
+    "pubmedqa": {
+     "n": 1000,
+     "correct": 713,
+     "acc": 0.713,
+     "ci95": [
+      0.6841895826913789,
+      0.7401802181681554
+     ],
+     "expected_items": 1000,
+     "missing_items": 0,
+     "errors": 0,
+     "no_answer": 0,
+     "truncated": 0,
+     "latency_s": {
+      "mean": 9.538681,
+      "median": 8.724499999999999,
+      "p90": 14.713700000000001
+     },
+     "ttft_s_median": 0.461,
+     "completion_tokens": {
+      "mean": 745.45,
+      "median": 691.5
+     },
+     "prompt_tokens_mean": 415.567,
+     "decode_tps_median": 82.65,
+     "subsets": {
+      "gold=yes": {
+       "n": 552,
+       "correct": 446,
+       "acc": 0.8079710144927537,
+       "ci95": [
+        0.7730278347679098,
+        0.8386573761271083
+       ]
+      },
+      "gold=no": {
+       "n": 338,
+       "correct": 229,
+       "acc": 0.6775147928994083,
+       "ci95": [
+        0.6259290988271288,
+        0.7251108259166684
+       ]
+      },
+      "gold=maybe": {
+       "n": 110,
+       "correct": 38,
+       "acc": 0.34545454545454546,
+       "ci95": [
+        0.2631639193458073,
+        0.43817511535988585
+       ]
+      },
+      "macro_f1": 0.6082674117604322
+     },
+     "server_timings": {
+      "n": 1000,
+      "prefill_tps_median": 1582.9217307111448,
+      "decode_tps_median": 82.76285527357747,
+      "draft_acceptance": 0.6461583637224576,
+      "draft_tokens": 650452
+     },
+     "pred_distribution": {
+      "maybe": 200,
+      "no": 266,
+      "yes": 534
+     },
+     "gold_distribution": {
+      "maybe": 110,
+      "no": 338,
+      "yes": 552
+     },
+     "confusion": {
+      "maybe": {
+       "maybe": 38,
+       "no": 16,
+       "yes": 56
+      },
+      "no": {
+       "maybe": 77,
+       "no": 229,
+       "yes": 32
+      },
+      "yes": {
+       "maybe": 85,
+       "no": 21,
+       "yes": 446
+      }
+     }
+    }
+   },
+   "overall": {
+    "n": 3686,
+    "correct": 2887,
+    "acc": 0.7832338578404775,
+    "ci95": [
+     0.7696407972482237,
+     0.7962371742766151
+    ],
+    "wall_s": 21880.061062812805,
+    "completion_tokens": 5190929,
+    "throughput_tok_s": 237.24472180849924,
+    "questions_per_hour": 606.4699710803329,
+    "decode_tps_median": 81.79,
+    "latency_s_median": 13.7015,
+    "concurrency": 3
+   },
+   "resources": {
+    "samples": 21875,
+    "baseline_samples": 30,
+    "gpu_mem_used_mib": {
+     "mean": 21210.65568,
+     "peak": 21211.0,
+     "baseline": 21185.0
+    },
+    "gpu_util_pct_mean": 88.48822857142856,
+    "gpu_power_w": {
+     "mean": 341.40966034285714,
+     "peak": 366.05,
+     "baseline_idle": 48.208333333333336
+    },
+    "gpu_energy_wh": 2074.680277447589,
+    "gpu_energy_wh_above_idle": 1781.7353765238342,
+    "server_rss_mib": {
+     "mean": 26167.541184,
+     "peak": 27186.1
+    },
+    "ram_used_mib": {
+     "mean": 31329.25925942857,
+     "peak": 32860.1,
+     "baseline": 14856.483333333334
+    },
+    "cpu_pct_mean": 12.446372571428572,
+    "gpu_temp_c_peak": 71.0,
+    "external_load": {
+     "samples": 21875,
+     "share_with_other_requests": 0.0,
+     "mean_other_requests": 0.0
+    },
+    "gpu_energy_wh_per_question": 0.5628541175929433,
+    "gpu_energy_wh_per_correct": 0.7186284300130201
+   },
+   "manifest": {
+    "medbench_version": "0.1.0",
+    "git_rev": "fb9c3564b699be4842a25bddd825bb80858e2d2a",
+    "prompt_version": "v1",
+    "host": {
+     "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+     "python": "3.12.14",
+     "cpu": "13th Gen Intel(R) Core(TM) i7-13700",
+     "ram_gib": 54.9,
+     "gpu": "NVIDIA GeForce RTX 4090, 24564 MiB, 570.211.01"
+    },
+    "server": {
+     "/props": {
+      "default_generation_settings": {
+       "params": {
+        "seed": 4294967295,
+        "temperature": 1.0,
+        "dynatemp_range": 0.0,
+        "dynatemp_exponent": 1.0,
+        "top_k": 20,
+        "top_p": 0.949999988079071,
+        "min_p": 0.05000000074505806,
+        "top_n_sigma": -1.0,
+        "xtc_probability": 0.0,
+        "xtc_threshold": 0.10000000149011612,
+        "typical_p": 1.0,
+        "repeat_last_n": 64,
+        "repeat_penalty": 1.0,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0,
+        "dry_multiplier": 0.0,
+        "dry_base": 1.75,
+        "dry_allowed_length": 2,
+        "dry_penalty_last_n": 64,
+        "mirostat": 0,
+        "mirostat_tau": 5.0,
+        "mirostat_eta": 0.10000000149011612,
+        "adaptive_target": -1.0,
+        "adaptive_decay": 0.8999999761581421,
+        "max_tokens": -1,
+        "n_predict": -1,
+        "n_keep": 0,
+        "n_discard": 0,
+        "ignore_eos": false,
+        "stream": false,
+        "n_probs": 0,
+        "min_keep": 0,
+        "chat_format": "Content-only",
+        "reasoning_format": "none",
+        "reasoning_in_content": false,
+        "generation_prompt": "",
+        "samplers": [
+         "penalties",
+         "dry",
+         "top_n_sigma",
+         "top_k",
+         "typ_p",
+         "top_p",
+         "min_p",
+         "xtc",
+         "temperature"
+        ],
+        "speculative.types": "none",
+        "timings_per_token": false,
+        "post_sampling_probs": false,
+        "backend_sampling": false,
+        "lora": []
+       },
+       "n_ctx": 131072
+      },
+      "total_slots": 4,
+      "model_alias": "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+      "model_ftype": "PQ2_0 - 2.13 bpw (group 128)",
+      "model_path": "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+      "modalities": {
+       "vision": false,
+       "video": false,
+       "audio": false
+      },
+      "media_marker": "<__media_PYyLOppNEmklcVYDwElQAgPSn3AbZQtQ__>",
+      "endpoint_slots": true,
+      "endpoint_props": false,
+      "endpoint_metrics": false,
+      "ui": true,
+      "ui_settings": {},
+      "chat_template_caps": {
+       "supports_object_arguments": true,
+       "supports_parallel_tool_calls": true,
+       "supports_preserve_reasoning": true,
+       "supports_reasoning_effort": true,
+       "supports_string_content": true,
+       "supports_system_role": true,
+       "supports_tool_calls": true,
+       "supports_tools": true,
+       "supports_typed_content": false
+      },
+      "bos_token": "<|endoftext|>",
+      "eos_token": "<|im_end|>",
+      "build_info": "b10787-73bfe6cc4",
+      "is_sleeping": false,
+      "cors_proxy_enabled": false
+     },
+     "/v1/models": {
+      "models": [
+       {
+        "name": "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+        "model": "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+        "modified_at": "",
+        "size": "",
+        "digest": "",
+        "type": "model",
+        "description": "",
+        "tags": [
+         ""
+        ],
+        "capabilities": [
+         "completion"
+        ],
+        "parameters": "",
+        "details": {
+         "parent_model": "",
+         "format": "gguf",
+         "family": "",
+         "families": [
+          ""
+         ],
+         "parameter_size": "",
+         "quantization_level": ""
+        }
+       }
+      ],
+      "object": "list",
+      "data": [
+       {
+        "id": "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+        "aliases": [
+         "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf"
+        ],
+        "tags": [],
+        "object": "model",
+        "created": 1792563261,
+        "owned_by": "llamacpp",
+        "meta": {
+         "vocab_type": true,
+         "n_vocab": 248320,
+         "n_ctx": 131072,
+         "n_ctx_train": 262144,
+         "n_embd": 5120,
+         "n_params": 27320697856,
+         "size": 7646367744,
+         "ftype": "PQ2_0 - 2.13 bpw (group 128)"
+        }
+       }
+      ]
+     }
+    },
+    "datasets": {
+     "medqa_usmle": {
+      "n_items": 1273,
+      "sample": null,
+      "revision": "484a6c066fe8e75c83edea0c88b5169316714fcd",
+      "sha256": "b50b49fad2642c10ed343c6174d5ab0cb8efad434e7b66465ac471094eb57deb",
+      "items_sha256": "7e146f7c56c095543c08cdcbffe9005e4633d9e1921f034e53d5dc160635e59a"
+     },
+     "medqa_twmle": {
+      "n_items": 1413,
+      "sample": null,
+      "revision": "484a6c066fe8e75c83edea0c88b5169316714fcd",
+      "sha256": "9756921fcff39ee482d8e06488b4ff32c26c9b966ac4c67c07f854da583f34b0",
+      "items_sha256": "1c1b3492a0f1a52bdc4328d7a0c8f22ccb0d2569ab56832adc43f2c41ea9f440"
+     },
+     "pubmedqa": {
+      "n_items": 1000,
+      "sample": null,
+      "revision": "9001f2853fb87cab8d220904e0de81ac6973b318",
+      "sha256": "3d56bd1abc11884579ecc3aab9dd3cdfce8b7cf54715daeca93b8022b7be231c",
+      "items_sha256": "984471e93d38db10081104de19762fff197446ab7379b2e05005f4be163011a1"
+     }
+    },
+    "sessions": [
+     {
+      "baseline_start": 1792515101.4411116,
+      "todo": 3686,
+      "start": 1792515116.4524348,
+      "end": 1792519185.029,
+      "end_inferred": true
+     },
+     {
+      "baseline_start": 1792563261.9332352,
+      "todo": 3177,
+      "git_rev": "fb9c3564b699be4842a25bddd825bb80858e2d2a",
+      "start": 1792563276.9465528,
+      "end": 1792581088.4310503
+     }
+    ]
+   }
+  },
+  {
+   "run": "strata-flashnext-iq3s-medium",
+   "label": "Strata Qwen3.8-Flash-Next 125B IQ3_S",
+   "config": {
+    "name": "strata-flashnext-iq3s-medium",
+    "label": "Strata Qwen3.8-Flash-Next 125B IQ3_S",
+    "base_url": "http://127.0.0.1:8090",
+    "model": "qwen3.8-flash-next-iq3_s",
+    "concurrency": 1,
+    "timeout_s": 3600,
+    "request": {
+     "max_tokens": 16384,
+     "temperature": 1.0,
+     "top_p": 0.95,
+     "top_k": 20,
+     "min_p": 0.05,
+     "reasoning_effort": "medium"
+    },
+    "server_info": [
+     "/props",
+     "/v1/models",
+     "/status",
+     "/config"
+    ],
+    "processes": [
+     "strata-engine/x/strata",
+     "serve/server.py"
+    ],
+    "system": {
+     "model": "Qwen3.8-Flash-Next-GSQ-RCO（MoE 約 125B 總參數）",
+     "weights": "IQ3_S（GSQ-RCO 重量化），GGUF 兩片共約 83.6 GB",
+     "engine": "Strata 0.1.45.3（engine 自行編譯 CUDA 12.9）+ MTP 推測解碼（--spec 4）",
+     "placement": "低 RAM 模式 resident 變體：注意力/共用權重與 GPU 專家快取（約 10.2 GiB）在 VRAM，其餘專家常駐 RAM；context 32,768、KV int8、一次一個請求（實測 parallel 3 總吞吐較低）",
+     "sampling": "temperature 1.0、top_p 0.95、top_k 20、min_p 0.05（與 Bonsai 相同），逐題 seed；關閉 Strata 的 answer_room 思考上限"
+    },
+    "launch": {
+     "engine_config": "configs/engine/strata-iq3_s-32k.json",
+     "parallel": 1,
+     "changes_from_setup": "exe/lib_dirs -> self-built CUDA 12.9 engine; --max-context 131072 -> 32768; answer_room false"
+    }
+   },
+   "datasets": {
+    "medqa_usmle": {
+     "n": 1273,
+     "correct": 1200,
+     "acc": 0.9426551453260016,
+     "ci95": [
+      0.9285013079582822,
+      0.9541454702779293
+     ],
+     "expected_items": 1273,
+     "missing_items": 0,
+     "errors": 0,
+     "no_answer": 0,
+     "truncated": 0,
+     "latency_s": {
+      "mean": 14.721738413197173,
+      "median": 13.371,
+      "p90": 20.0942
+     },
+     "ttft_s_median": 0.906,
+     "completion_tokens": {
+      "mean": 1166.2702278083268,
+      "median": 1054.0
+     },
+     "prompt_tokens_mean": 274.8813825608798,
+     "decode_tps_median": 85.51,
+     "subsets": {
+      "step1": {
+       "n": 679,
+       "correct": 649,
+       "acc": 0.9558173784977909,
+       "ci95": [
+        0.9376277349845457,
+        0.9688784414478464
+       ]
+      },
+      "step2&3": {
+       "n": 594,
+       "correct": 551,
+       "acc": 0.9276094276094277,
+       "ci95": [
+        0.9039088526793676,
+        0.9458147528908939
+       ]
+      }
+     },
+     "server_timings": {
+      "n": 1273,
+      "prefill_tps_median": 298.6179664363278,
+      "decode_tps_median": 85.43065012773316,
+      "draft_acceptance": 0.6421716313178938,
+      "draft_tokens": 1403019
+     },
+     "pred_distribution": {
+      "A": 341,
+      "B": 315,
+      "C": 348,
+      "D": 269
+     },
+     "gold_distribution": {
+      "A": 353,
+      "B": 309,
+      "C": 346,
+      "D": 265
+     },
+     "confusion": {
+      "A": {
+       "A": 325,
+       "B": 8,
+       "C": 13,
+       "D": 7
+      },
+      "B": {
+       "A": 6,
+       "B": 295,
+       "C": 5,
+       "D": 3
+      },
+      "C": {
+       "A": 5,
+       "B": 6,
+       "C": 328,
+       "D": 7
+      },
+      "D": {
+       "A": 5,
+       "B": 6,
+       "C": 2,
+       "D": 252
+      }
+     }
+    },
+    "medqa_twmle": {
+     "n": 1413,
+     "correct": 1269,
+     "acc": 0.8980891719745223,
+     "ci95": [
+      0.8812201208072471,
+      0.9127995579282079
+     ],
+     "expected_items": 1413,
+     "missing_items": 0,
+     "errors": 0,
+     "no_answer": 0,
+     "truncated": 0,
+     "latency_s": {
+      "mean": 11.070925690021232,
+      "median": 9.177,
+      "p90": 16.6864
+     },
+     "ttft_s_median": 0.69,
+     "completion_tokens": {
+      "mean": 916.6100495399859,
+      "median": 765.0
+     },
+     "prompt_tokens_mean": 158.40481245576788,
+     "decode_tps_median": 89.63,
+     "subsets": {
+      "standalone": {
+       "n": 1389,
+       "correct": 1253,
+       "acc": 0.9020878329733621,
+       "ci95": [
+        0.8853317878540778,
+        0.9166259603717348
+       ]
+      },
+      "depends_on_previous (承上題)": {
+       "n": 24,
+       "correct": 16,
+       "acc": 0.6666666666666666,
+       "ci95": [
+        0.46706316684738447,
+        0.8202780976355061
+       ]
+      }
+     },
+     "server_timings": {
+      "n": 1413,
+      "prefill_tps_median": 225.16354784725394,
+      "decode_tps_median": 89.54579782069264,
+      "draft_acceptance": 0.6666443920705865,
+      "draft_tokens": 1167249
+     },
+     "pred_distribution": {
+      "A": 340,
+      "B": 381,
+      "C": 359,
+      "D": 333
+     },
+     "gold_distribution": {
+      "A": 335,
+      "B": 373,
+      "C": 365,
+      "D": 340
+     },
+     "confusion": {
+      "A": {
+       "A": 305,
+       "B": 15,
+       "C": 4,
+       "D": 11
+      },
+      "B": {
+       "A": 10,
+       "B": 338,
+       "C": 8,
+       "D": 17
+      },
+      "C": {
+       "A": 10,
+       "B": 10,
+       "C": 333,
+       "D": 12
+      },
+      "D": {
+       "A": 15,
+       "B": 18,
+       "C": 14,
+       "D": 293
+      }
+     }
+    },
+    "pubmedqa": {
+     "n": 1000,
+     "correct": 775,
+     "acc": 0.775,
+     "ci95": [
+      0.7480942377549875,
+      0.7998010450448807
+     ],
+     "expected_items": 1000,
+     "missing_items": 0,
+     "errors": 0,
+     "no_answer": 0,
+     "truncated": 0,
+     "latency_s": {
+      "mean": 8.684431,
+      "median": 8.256499999999999,
+      "p90": 12.5053
+     },
+     "ttft_s_median": 0.973,
+     "completion_tokens": {
+      "mean": 675.224,
+      "median": 628.0
+     },
+     "prompt_tokens_mean": 415.567,
+     "decode_tps_median": 88.71,
+     "subsets": {
+      "gold=yes": {
+       "n": 552,
+       "correct": 453,
+       "acc": 0.8206521739130435,
+       "ci95": [
+        0.7864658702838293,
+        0.850406378706866
+       ]
+      },
+      "gold=no": {
+       "n": 338,
+       "correct": 286,
+       "acc": 0.8461538461538461,
+       "ci95": [
+        0.8038190674875609,
+        0.8807087857628437
+       ]
+      },
+      "gold=maybe": {
+       "n": 110,
+       "correct": 36,
+       "acc": 0.32727272727272727,
+       "ci95": [
+        0.24671132553263087,
+        0.4194911250207909
+       ]
+      },
+      "macro_f1": 0.6595220513673496
+     },
+     "server_timings": {
+      "n": 1000,
+      "prefill_tps_median": 430.42856426616845,
+      "decode_tps_median": 88.57963382798184,
+      "draft_acceptance": 0.6677274905767518,
+      "draft_tokens": 632213
+     },
+     "pred_distribution": {
+      "maybe": 143,
+      "no": 334,
+      "yes": 523
+     },
+     "gold_distribution": {
+      "maybe": 110,
+      "no": 338,
+      "yes": 552
+     },
+     "confusion": {
+      "maybe": {
+       "maybe": 36,
+       "no": 24,
+       "yes": 50
+      },
+      "no": {
+       "maybe": 32,
+       "no": 286,
+       "yes": 20
+      },
+      "yes": {
+       "maybe": 75,
+       "no": 24,
+       "yes": 453
+      }
+     }
+    }
+   },
+   "overall": {
+    "n": 3686,
+    "correct": 3244,
+    "acc": 0.8800868149755833,
+    "ci95": [
+     0.8692017326972743,
+     0.8901804877110582
+    ],
+    "wall_s": 43069.433149814606,
+    "completion_tokens": 3455056,
+    "throughput_tok_s": 80.22060536487169,
+    "questions_per_hour": 308.09785570760687,
+    "decode_tps_median": 87.6,
+    "latency_s_median": 10.628499999999999,
+    "concurrency": 1
+   },
+   "resources": {
+    "samples": 43058,
+    "baseline_samples": 16,
+    "gpu_mem_used_mib": {
+     "mean": 23942.992335918992,
+     "peak": 23943.0,
+     "baseline": 23827.0
+    },
+    "gpu_util_pct_mean": 91.57359840215523,
+    "gpu_power_w": {
+     "mean": 206.2313881276418,
+     "peak": 266.57,
+     "baseline_idle": 72.089375
+    },
+    "gpu_energy_wh": 2467.2170275603057,
+    "gpu_energy_wh_above_idle": 1604.7801952073198,
+    "server_rss_mib": {
+     "mean": 44013.586174462354,
+     "peak": 44029.9
+    },
+    "ram_used_mib": {
+     "mean": 49739.6765850713,
+     "peak": 50200.6,
+     "baseline": 48250.16875
+    },
+    "cpu_pct_mean": 95.90906916252497,
+    "gpu_temp_c_peak": 59.0,
+    "external_load": {
+     "samples": 43058,
+     "share_with_other_requests": 0.0,
+     "mean_other_requests": 0.0
+    },
+    "gpu_energy_wh_per_question": 0.669348081269752,
+    "gpu_energy_wh_per_correct": 0.7605477890136577
+   },
+   "manifest": {
+    "medbench_version": "0.1.0",
+    "git_rev": "c4fad7e6f9f68aa2d361d4d61d1d93c47fbae7c9",
+    "prompt_version": "v1",
+    "host": {
+     "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+     "python": "3.12.14",
+     "cpu": "13th Gen Intel(R) Core(TM) i7-13700",
+     "ram_gib": 54.9,
+     "gpu": "NVIDIA GeForce RTX 4090, 24564 MiB, 570.211.01"
+    },
+    "server": {
+     "/props": {
+      "default_generation_settings": {
+       "n_ctx": 32768,
+       "params": {
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "n_predict": -1
+       }
+      },
+      "total_slots": 1,
+      "model_alias": "qwen3.8-flash-next-iq3_s",
+      "chat_template_caps": {
+       "supports_tools": true,
+       "supports_tool_calls": true,
+       "supports_system_role": true,
+       "supports_parallel_tool_calls": true,
+       "supports_preserve_reasoning": true
+      },
+      "modalities": {
+       "vision": false
+      },
+      "models_autoload": true,
+      "is_sleeping": false,
+      "model_path": "/home/eric/strata-models/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+      "build_info": "Strata 0.1.45"
+     },
+     "/v1/models": {
+      "object": "list",
+      "data": [
+       {
+        "id": "qwen3.8-flash-next-iq3_s",
+        "object": "model",
+        "status": {
+         "value": "loaded"
+        },
+        "meta": {
+         "n_ctx": 32768
+        },
+        "architecture": {
+         "input_modalities": [
+          "text"
+         ],
+         "output_modalities": [
+          "text"
+         ]
+        }
+       }
+      ]
+     },
+     "/status": {
+      "busy": false,
+      "queued": 0,
+      "phase": "answering",
+      "prompt_tokens": 15,
+      "generated": 1,
+      "max_tokens": 16,
+      "reasoning_recoveries": 0,
+      "thinking_budget": null
+     },
+     "/config": {
+      "file": "strata-iq3_s-32k.json",
+      "keys": [
+       {
+        "key": "sampling.temperature",
+        "value": null,
+        "help": "Default temperature for requests that send none (0 = greedy; without it the model card's: 1.0 thinking, 0.7 not)",
+        "kind": "number"
+       },
+       {
+        "key": "sampling.top_p",
+        "value": null,
+        "help": "Default top_p for requests that send none",
+        "kind": "number"
+       },
+       {
+        "key": "sampling.top_k",
+        "value": null,
+        "help": "Default top_k for requests that send none (1-64)",
+        "kind": "number"
+       },
+       {
+        "key": "sampling.min_p",
+        "value": null,
+        "help": "Default min_p for requests that send none",
+        "kind": "number"
+       },
+       {
+        "key": "reasoning_budget_tokens",
+        "value": null,
+        "help": "Cap the thinking of every request at this many tokens (0 or empty: no cap)",
+        "kind": "number"
+       },
+       {
+        "key": "fit_max_tokens",
+        "value": null,
+        "help": "Shorten a max_tokens that does not fit the context (on by default); off: answer 400 like llama.cpp",
+        "kind": "bool"
+       },
+       {
+        "key": "anthropic_thinking",
+        "value": null,
+        "help": "Anthropic requests that do not ask for thinking: think as the model does (model) or not (on_request)",
+        "kind": "enum",
+        "choices": [
+         "model",
+         "on_request"
+        ]
+       },
+       {
+        "key": "effort_position",
+        "value": null,
+        "help": "Where a non-default reasoning effort goes: start (the default) or end (keeps the cache when it changes)",
+        "kind": "enum",
+        "choices": [
+         "start",
+         "end"
+        ]
+       },
+       {
+        "key": "aliases",
+        "value": null,
+        "help": "Other model names the server lists and answers to (comma-separated)",
+        "kind": "names"
+       },
+       {
+        "key": "idle_unload_s",
+        "value": null,
+        "help": "Unload the model after this many seconds without requests (0 or empty: never)",
+        "kind": "number"
+       },
+       {
+        "key": "lazy_load",
+        "value": null,
+        "help": "Start without loading the model; the first request loads it (text only)",
+        "kind": "bool"
+       },
+       {
+        "key": "engine_silence_s",
+        "value": null,
+        "help": "End a request when the engine says nothing for this long (default 300 s, 0 = wait)",
+        "kind": "number"
+       },
+       {
+        "key": "api_monitor",
+        "value": null,
+        "help": "Keep the last 100 requests' prompts and answers in memory for /api-monitor",
+        "kind": "bool"
+       },
+       {
+        "key": "open_browser",
+        "value": false,
+        "help": "Open the chat page in the browser when the model is ready",
+        "kind": "bool"
+       },
+       {
+        "key": "vram_reserve_mib",
+        "value": null,
+        "help": "VRAM in MiB the engine leaves free for other programs (engine default 700)",
+        "kind": "number"
+       }
+      ],
+      "note": "Saved to the run config; used from the next start of the model."
+     }
+    },
+    "datasets": {
+     "medqa_usmle": {
+      "n_items": 1273,
+      "sample": null,
+      "revision": "484a6c066fe8e75c83edea0c88b5169316714fcd",
+      "sha256": "b50b49fad2642c10ed343c6174d5ab0cb8efad434e7b66465ac471094eb57deb",
+      "items_sha256": "7e146f7c56c095543c08cdcbffe9005e4633d9e1921f034e53d5dc160635e59a"
+     },
+     "medqa_twmle": {
+      "n_items": 1413,
+      "sample": null,
+      "revision": "484a6c066fe8e75c83edea0c88b5169316714fcd",
+      "sha256": "9756921fcff39ee482d8e06488b4ff32c26c9b966ac4c67c07f854da583f34b0",
+      "items_sha256": "1c1b3492a0f1a52bdc4328d7a0c8f22ccb0d2569ab56832adc43f2c41ea9f440"
+     },
+     "pubmedqa": {
+      "n_items": 1000,
+      "sample": null,
+      "revision": "9001f2853fb87cab8d220904e0de81ac6973b318",
+      "sha256": "3d56bd1abc11884579ecc3aab9dd3cdfce8b7cf54715daeca93b8022b7be231c",
+      "items_sha256": "984471e93d38db10081104de19762fff197446ab7379b2e05005f4be163011a1"
+     }
+    },
+    "sessions": [
+     {
+      "baseline_start": 1792520164.2955408,
+      "todo": 3686,
+      "git_rev": "c4fad7e6f9f68aa2d361d4d61d1d93c47fbae7c9",
+      "start": 1792520179.3084257,
+      "end": 1792563248.7415755
+     }
+    ]
+   }
+  }
+ ]
+}

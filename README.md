@@ -10,7 +10,29 @@
 - **速度與資源**：TTFT、延遲、單請求解碼速度、總吞吐；每秒取樣 VRAM／GPU 使用率／功耗／溫度、伺服器 RSS、系統 RAM、CPU，計算能耗（Wh/題，含扣除閒置功耗），並記錄共用伺服器上其他使用者的請求。
 - **報告**：`medbench report` 產生正式 Markdown 報告（方法、結果、配對比較、速度、資源、重現步驟）。
 
-最新報告：[reports/REPORT.md](reports/REPORT.md)
+最新報告：[reports/REPORT.md](reports/REPORT.md)（數據：[reports/REPORT.json](reports/REPORT.json)）
+
+## 結果摘要（2026-10-21，RTX 4090 KVM 虛擬機）
+
+零樣本、思考 effort medium、相同取樣參數與逐題 seed，3,686 題全部作答：
+
+| | Bonsai 27B PQ2_0（llama.cpp，正式服務） | Strata Qwen3.8-Flash-Next 125B IQ3_S |
+|---|---:|---:|
+| MedQA-USMLE（1,273） | 84.8% [82.7–86.6] | **94.3%** [92.9–95.4] |
+| MedQA-TWMLE 繁中（1,413） | 77.5% [75.2–79.6] | **89.8%** [88.1–91.3] |
+| PubMedQA-L（1,000） | 71.3% [68.4–74.0] | **77.5%** [74.8–80.0] |
+| **整體（3,686）** | 78.3% [77.0–79.6] | **88.0%** [86.9–89.0] |
+| 配對差（McNemar） | | +9.7 個百分點 [8.5–10.9]，p < 0.001 |
+| 無答案 / 截斷 | 5 / 4（重複迴圈） | 0 / 0 |
+| 單請求解碼中位 | 81.8 tok/s（3 併發） | 87.6 tok/s（1 併發） |
+| 平均輸出 tokens / 題 | 1,408 | 937 |
+| 每題中位延遲 | 13.7 s | 10.6 s |
+| 吞吐 | **606 題/小時**（6.1 h） | 308 題/小時（12.0 h） |
+| VRAM（整張卡，含 Clef 6.5 GiB） | 20.7 GiB | 23.4 GiB |
+| 伺服器 RSS / CPU | 25.6 GiB（多為提示快取）/ 12% | 43 GiB / 96% |
+| GPU 能耗 / 題、/ 答對一題 | 0.56 / 0.72 Wh | 0.67 / 0.76 Wh |
+
+中括號為 95% Wilson CI。Strata 正確率較高、沒有退化輸出、每題想得較短；代價是需要整台機器（必須暫停 Bonsai）、總吞吐只有一半。詳見報告第 5–7 節（設定細節、討論、限制）。
 
 ## 資料集
 
@@ -28,7 +50,7 @@
 ```bash
 git clone https://github.com/u9401066/medqa-bench && cd medqa-bench
 uv venv && uv pip install -e '.[test]'     # 或 python -m venv .venv && pip install -e '.[test]'
-.venv/bin/pytest -q                         # 31 個測試（解析器、統計、假伺服器端到端）
+.venv/bin/pytest -q                         # 33 個測試（解析器、統計、假伺服器端到端、中斷續跑）
 
 medbench prepare                                                    # 下載、驗證、正規化到 data/
 medbench run --config configs/bonsai27b-pq2-medium.json --sample 10 --out results/pilot-bonsai   # 先試跑
