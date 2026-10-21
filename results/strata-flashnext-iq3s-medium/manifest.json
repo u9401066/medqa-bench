@@ -1,0 +1,248 @@
+{
+ "medbench_version": "0.1.0",
+ "git_rev": "c4fad7e6f9f68aa2d361d4d61d1d93c47fbae7c9",
+ "prompt_version": "v1",
+ "config": {
+  "name": "strata-flashnext-iq3s-medium",
+  "label": "Strata Qwen3.8-Flash-Next 125B IQ3_S",
+  "base_url": "http://127.0.0.1:8090",
+  "model": "qwen3.8-flash-next-iq3_s",
+  "concurrency": 1,
+  "timeout_s": 3600,
+  "request": {
+   "max_tokens": 16384,
+   "temperature": 1.0,
+   "top_p": 0.95,
+   "top_k": 20,
+   "min_p": 0.05,
+   "reasoning_effort": "medium"
+  },
+  "server_info": [
+   "/props",
+   "/v1/models",
+   "/status",
+   "/config"
+  ],
+  "processes": [
+   "strata-engine/x/strata",
+   "serve/server.py"
+  ],
+  "system": {
+   "model": "Qwen3.8-Flash-Next-GSQ-RCO（MoE 約 125B 總參數）",
+   "weights": "IQ3_S（GSQ-RCO 重量化），GGUF 兩片共約 83.6 GB",
+   "engine": "Strata 0.1.45.3（engine 自行編譯 CUDA 12.9）+ MTP 推測解碼（--spec 4）",
+   "placement": "低 RAM 模式 resident 變體：注意力/共用權重與 GPU 專家快取（約 10.2 GiB）在 VRAM，其餘專家常駐 RAM；context 32,768、KV int8、一次一個請求（實測 parallel 3 總吞吐較低）",
+   "sampling": "temperature 1.0、top_p 0.95、top_k 20、min_p 0.05（與 Bonsai 相同），逐題 seed；關閉 Strata 的 answer_room 思考上限"
+  },
+  "launch": {
+   "engine_config": "configs/engine/strata-iq3_s-32k.json",
+   "parallel": 1,
+   "changes_from_setup": "exe/lib_dirs -> self-built CUDA 12.9 engine; --max-context 131072 -> 32768; answer_room false"
+  }
+ },
+ "datasets": {
+  "medqa_usmle": {
+   "n_items": 1273,
+   "sample": null,
+   "revision": "484a6c066fe8e75c83edea0c88b5169316714fcd",
+   "sha256": "b50b49fad2642c10ed343c6174d5ab0cb8efad434e7b66465ac471094eb57deb",
+   "items_sha256": "7e146f7c56c095543c08cdcbffe9005e4633d9e1921f034e53d5dc160635e59a"
+  },
+  "medqa_twmle": {
+   "n_items": 1413,
+   "sample": null,
+   "revision": "484a6c066fe8e75c83edea0c88b5169316714fcd",
+   "sha256": "9756921fcff39ee482d8e06488b4ff32c26c9b966ac4c67c07f854da583f34b0",
+   "items_sha256": "1c1b3492a0f1a52bdc4328d7a0c8f22ccb0d2569ab56832adc43f2c41ea9f440"
+  },
+  "pubmedqa": {
+   "n_items": 1000,
+   "sample": null,
+   "revision": "9001f2853fb87cab8d220904e0de81ac6973b318",
+   "sha256": "3d56bd1abc11884579ecc3aab9dd3cdfce8b7cf54715daeca93b8022b7be231c",
+   "items_sha256": "984471e93d38db10081104de19762fff197446ab7379b2e05005f4be163011a1"
+  }
+ },
+ "host": {
+  "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+  "python": "3.12.14",
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13700",
+  "ram_gib": 54.9,
+  "gpu": "NVIDIA GeForce RTX 4090, 24564 MiB, 570.211.01"
+ },
+ "server": {
+  "/props": {
+   "default_generation_settings": {
+    "n_ctx": 32768,
+    "params": {
+     "temperature": 1.0,
+     "top_p": 0.95,
+     "top_k": 20,
+     "n_predict": -1
+    }
+   },
+   "total_slots": 1,
+   "model_alias": "qwen3.8-flash-next-iq3_s",
+   "chat_template_caps": {
+    "supports_tools": true,
+    "supports_tool_calls": true,
+    "supports_system_role": true,
+    "supports_parallel_tool_calls": true,
+    "supports_preserve_reasoning": true
+   },
+   "modalities": {
+    "vision": false
+   },
+   "models_autoload": true,
+   "is_sleeping": false,
+   "model_path": "/home/eric/strata-models/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+   "build_info": "Strata 0.1.45"
+  },
+  "/v1/models": {
+   "object": "list",
+   "data": [
+    {
+     "id": "qwen3.8-flash-next-iq3_s",
+     "object": "model",
+     "status": {
+      "value": "loaded"
+     },
+     "meta": {
+      "n_ctx": 32768
+     },
+     "architecture": {
+      "input_modalities": [
+       "text"
+      ],
+      "output_modalities": [
+       "text"
+      ]
+     }
+    }
+   ]
+  },
+  "/status": {
+   "busy": false,
+   "queued": 0,
+   "phase": "answering",
+   "prompt_tokens": 15,
+   "generated": 1,
+   "max_tokens": 16,
+   "reasoning_recoveries": 0,
+   "thinking_budget": null
+  },
+  "/config": {
+   "file": "strata-iq3_s-32k.json",
+   "keys": [
+    {
+     "key": "sampling.temperature",
+     "value": null,
+     "help": "Default temperature for requests that send none (0 = greedy; without it the model card's: 1.0 thinking, 0.7 not)",
+     "kind": "number"
+    },
+    {
+     "key": "sampling.top_p",
+     "value": null,
+     "help": "Default top_p for requests that send none",
+     "kind": "number"
+    },
+    {
+     "key": "sampling.top_k",
+     "value": null,
+     "help": "Default top_k for requests that send none (1-64)",
+     "kind": "number"
+    },
+    {
+     "key": "sampling.min_p",
+     "value": null,
+     "help": "Default min_p for requests that send none",
+     "kind": "number"
+    },
+    {
+     "key": "reasoning_budget_tokens",
+     "value": null,
+     "help": "Cap the thinking of every request at this many tokens (0 or empty: no cap)",
+     "kind": "number"
+    },
+    {
+     "key": "fit_max_tokens",
+     "value": null,
+     "help": "Shorten a max_tokens that does not fit the context (on by default); off: answer 400 like llama.cpp",
+     "kind": "bool"
+    },
+    {
+     "key": "anthropic_thinking",
+     "value": null,
+     "help": "Anthropic requests that do not ask for thinking: think as the model does (model) or not (on_request)",
+     "kind": "enum",
+     "choices": [
+      "model",
+      "on_request"
+     ]
+    },
+    {
+     "key": "effort_position",
+     "value": null,
+     "help": "Where a non-default reasoning effort goes: start (the default) or end (keeps the cache when it changes)",
+     "kind": "enum",
+     "choices": [
+      "start",
+      "end"
+     ]
+    },
+    {
+     "key": "aliases",
+     "value": null,
+     "help": "Other model names the server lists and answers to (comma-separated)",
+     "kind": "names"
+    },
+    {
+     "key": "idle_unload_s",
+     "value": null,
+     "help": "Unload the model after this many seconds without requests (0 or empty: never)",
+     "kind": "number"
+    },
+    {
+     "key": "lazy_load",
+     "value": null,
+     "help": "Start without loading the model; the first request loads it (text only)",
+     "kind": "bool"
+    },
+    {
+     "key": "engine_silence_s",
+     "value": null,
+     "help": "End a request when the engine says nothing for this long (default 300 s, 0 = wait)",
+     "kind": "number"
+    },
+    {
+     "key": "api_monitor",
+     "value": null,
+     "help": "Keep the last 100 requests' prompts and answers in memory for /api-monitor",
+     "kind": "bool"
+    },
+    {
+     "key": "open_browser",
+     "value": false,
+     "help": "Open the chat page in the browser when the model is ready",
+     "kind": "bool"
+    },
+    {
+     "key": "vram_reserve_mib",
+     "value": null,
+     "help": "VRAM in MiB the engine leaves free for other programs (engine default 700)",
+     "kind": "number"
+    }
+   ],
+   "note": "Saved to the run config; used from the next start of the model."
+  }
+ },
+ "sessions": [
+  {
+   "baseline_start": 1792520164.2955408,
+   "todo": 3686,
+   "git_rev": "c4fad7e6f9f68aa2d361d4d61d1d93c47fbae7c9",
+   "start": 1792520179.3084257,
+   "end": 1792563248.7415755
+  }
+ ]
+}

@@ -1,0 +1,226 @@
+{
+ "medbench_version": "0.1.0",
+ "git_rev": "fb9c3564b699be4842a25bddd825bb80858e2d2a",
+ "prompt_version": "v1",
+ "config": {
+  "name": "bonsai27b-pq2-medium",
+  "label": "Bonsai 27B PQ2_0",
+  "base_url": "http://127.0.0.1:8081",
+  "model": "bonsai",
+  "concurrency": 3,
+  "timeout_s": 3600,
+  "request": {
+   "max_tokens": 16384,
+   "temperature": 1.0,
+   "top_p": 0.95,
+   "top_k": 20,
+   "min_p": 0.05,
+   "chat_template_kwargs": {
+    "reasoning_effort": "medium"
+   }
+  },
+  "server_info": [
+   "/props",
+   "/v1/models"
+  ],
+  "processes": [
+   "Ternary-Bonsai-2-27B"
+  ],
+  "system": {
+   "model": "Ternary-Bonsai-2-27B-Abliterated-v2（Qwen3.8-27B 架構，dense 27B）",
+   "weights": "PQ2_0 三元（ternary）權重 + MTP 頭，GGUF 7.1 GiB（7,303 MiB）",
+   "engine": "PrismML llama.cpp fork prism-b10787（llama-server）+ MTP 推測解碼",
+   "placement": "全部層在 GPU（-ngl 99），KV 131,072 tokens / 4 slots，flash-attn",
+   "sampling": "temperature 1.0、top_p 0.95、top_k 20、min_p 0.05（模型 GGUF 內建預設），逐題 seed"
+  }
+ },
+ "datasets": {
+  "medqa_usmle": {
+   "n_items": 1273,
+   "sample": null,
+   "revision": "484a6c066fe8e75c83edea0c88b5169316714fcd",
+   "sha256": "b50b49fad2642c10ed343c6174d5ab0cb8efad434e7b66465ac471094eb57deb",
+   "items_sha256": "7e146f7c56c095543c08cdcbffe9005e4633d9e1921f034e53d5dc160635e59a"
+  },
+  "medqa_twmle": {
+   "n_items": 1413,
+   "sample": null,
+   "revision": "484a6c066fe8e75c83edea0c88b5169316714fcd",
+   "sha256": "9756921fcff39ee482d8e06488b4ff32c26c9b966ac4c67c07f854da583f34b0",
+   "items_sha256": "1c1b3492a0f1a52bdc4328d7a0c8f22ccb0d2569ab56832adc43f2c41ea9f440"
+  },
+  "pubmedqa": {
+   "n_items": 1000,
+   "sample": null,
+   "revision": "9001f2853fb87cab8d220904e0de81ac6973b318",
+   "sha256": "3d56bd1abc11884579ecc3aab9dd3cdfce8b7cf54715daeca93b8022b7be231c",
+   "items_sha256": "984471e93d38db10081104de19762fff197446ab7379b2e05005f4be163011a1"
+  }
+ },
+ "host": {
+  "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+  "python": "3.12.14",
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13700",
+  "ram_gib": 54.9,
+  "gpu": "NVIDIA GeForce RTX 4090, 24564 MiB, 570.211.01"
+ },
+ "server": {
+  "/props": {
+   "default_generation_settings": {
+    "params": {
+     "seed": 4294967295,
+     "temperature": 1.0,
+     "dynatemp_range": 0.0,
+     "dynatemp_exponent": 1.0,
+     "top_k": 20,
+     "top_p": 0.949999988079071,
+     "min_p": 0.05000000074505806,
+     "top_n_sigma": -1.0,
+     "xtc_probability": 0.0,
+     "xtc_threshold": 0.10000000149011612,
+     "typical_p": 1.0,
+     "repeat_last_n": 64,
+     "repeat_penalty": 1.0,
+     "presence_penalty": 0.0,
+     "frequency_penalty": 0.0,
+     "dry_multiplier": 0.0,
+     "dry_base": 1.75,
+     "dry_allowed_length": 2,
+     "dry_penalty_last_n": 64,
+     "mirostat": 0,
+     "mirostat_tau": 5.0,
+     "mirostat_eta": 0.10000000149011612,
+     "adaptive_target": -1.0,
+     "adaptive_decay": 0.8999999761581421,
+     "max_tokens": -1,
+     "n_predict": -1,
+     "n_keep": 0,
+     "n_discard": 0,
+     "ignore_eos": false,
+     "stream": false,
+     "n_probs": 0,
+     "min_keep": 0,
+     "chat_format": "Content-only",
+     "reasoning_format": "none",
+     "reasoning_in_content": false,
+     "generation_prompt": "",
+     "samplers": [
+      "penalties",
+      "dry",
+      "top_n_sigma",
+      "top_k",
+      "typ_p",
+      "top_p",
+      "min_p",
+      "xtc",
+      "temperature"
+     ],
+     "speculative.types": "none",
+     "timings_per_token": false,
+     "post_sampling_probs": false,
+     "backend_sampling": false,
+     "lora": []
+    },
+    "n_ctx": 131072
+   },
+   "total_slots": 4,
+   "model_alias": "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+   "model_ftype": "PQ2_0 - 2.13 bpw (group 128)",
+   "model_path": "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+   "modalities": {
+    "vision": false,
+    "video": false,
+    "audio": false
+   },
+   "media_marker": "<__media_PYyLOppNEmklcVYDwElQAgPSn3AbZQtQ__>",
+   "endpoint_slots": true,
+   "endpoint_props": false,
+   "endpoint_metrics": false,
+   "ui": true,
+   "ui_settings": {},
+   "chat_template_caps": {
+    "supports_object_arguments": true,
+    "supports_parallel_tool_calls": true,
+    "supports_preserve_reasoning": true,
+    "supports_reasoning_effort": true,
+    "supports_string_content": true,
+    "supports_system_role": true,
+    "supports_tool_calls": true,
+    "supports_tools": true,
+    "supports_typed_content": false
+   },
+   "bos_token": "<|endoftext|>",
+   "eos_token": "<|im_end|>",
+   "build_info": "b10787-73bfe6cc4",
+   "is_sleeping": false,
+   "cors_proxy_enabled": false
+  },
+  "/v1/models": {
+   "models": [
+    {
+     "name": "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+     "model": "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+     "modified_at": "",
+     "size": "",
+     "digest": "",
+     "type": "model",
+     "description": "",
+     "tags": [
+      ""
+     ],
+     "capabilities": [
+      "completion"
+     ],
+     "parameters": "",
+     "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "",
+      "families": [
+       ""
+      ],
+      "parameter_size": "",
+      "quantization_level": ""
+     }
+    }
+   ],
+   "object": "list",
+   "data": [
+    {
+     "id": "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+     "aliases": [
+      "/home/eric/llamacpp-prism/models/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf"
+     ],
+     "tags": [],
+     "object": "model",
+     "created": 1792563261,
+     "owned_by": "llamacpp",
+     "meta": {
+      "vocab_type": true,
+      "n_vocab": 248320,
+      "n_ctx": 131072,
+      "n_ctx_train": 262144,
+      "n_embd": 5120,
+      "n_params": 27320697856,
+      "size": 7646367744,
+      "ftype": "PQ2_0 - 2.13 bpw (group 128)"
+     }
+    }
+   ]
+  }
+ },
+ "sessions": [
+  {
+   "baseline_start": 1792515101.4411116,
+   "todo": 3686,
+   "start": 1792515116.4524348
+  },
+  {
+   "baseline_start": 1792563261.9332352,
+   "todo": 3177,
+   "git_rev": "fb9c3564b699be4842a25bddd825bb80858e2d2a",
+   "start": 1792563276.9465528,
+   "end": 1792581088.4310503
+  }
+ ]
+}
