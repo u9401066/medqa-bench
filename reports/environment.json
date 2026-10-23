@@ -1,0 +1,107 @@
+{
+ "collected_at": "2026-10-23 08:36 UTC",
+ "note": "Collected on the benchmark host (llm01) after the runs; the hardware and software are the ones the runs used (also recorded per run in results/*/manifest.json).",
+ "host": {
+  "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+  "python": "3.12.14",
+  "kernel": "5.15.0-190-generic",
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13700",
+  "logical_cpus": 12,
+  "ram_gib": 54.9,
+  "swap_gib": 16.0,
+  "os": "Ubuntu 22.04.4 LTS",
+  "virtualization": "kvm",
+  "gpu": "NVIDIA GeForce RTX 4090, 24564 MiB, 570.211.01",
+  "gpu_pcie": "Gen4 x16",
+  "cuda_driver_api": "12.8",
+  "disks": [
+   "QEMU HARDDISK 1T 0 disk"
+  ]
+ },
+ "models": [
+  {
+   "system": "Bonsai 27B PQ2_0",
+   "repo": "BoldingBuilds/Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP-GGUF",
+   "revision": "e25d197aa62ce0a2f685fc65d76a41b2416c5e66",
+   "base": "prism-ml/Ternary-Bonsai-2-27B（Qwen3.8-27B 架構，dense）；Abliterated v2 為移除拒答方向的修改版",
+   "files": [
+    {
+     "name": "Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf",
+     "bytes": 7657489696,
+     "sha256": "a4e4c7b578131595c1694354bd6c74d00920df1f5082647a6126899753ebebf8"
+    }
+   ],
+   "verified": "本機檔案 sha256sum 與 Hugging Face LFS sha256 相同（2026-10-23）"
+  },
+  {
+   "system": "Strata Qwen3.8-Flash-Next 125B IQ3_S",
+   "repo": "ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF",
+   "revision": "ed59f92082b1e93c0e96d60a8b11aab089b52f09",
+   "base": "Qwen/Qwen3.8-Flash-Next（MoE，約 125B 總參數）；MTP 草稿層由 Strata setup 從原始 Qwen checkpoint 取得",
+   "files": [
+    {
+     "name": "IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+     "bytes": 54817524224,
+     "sha256": "4c1eb2ceb4915e1192f4f386021897bde56a97f40a0bb78bb86465e0f7d2aca3"
+    },
+    {
+     "name": "IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
+     "bytes": 28800138432,
+     "sha256": "316b46f3a2dbd68c900f43136ab9449f9dcc3725dfd8c794847c204bc161e113"
+    }
+   ],
+   "verified": "第 1 片由 Strata setup 下載後整檔驗證；第 2 片本機 sha256sum；兩片都與 Hugging Face LFS sha256 相同（2026-10-23）"
+  }
+ ],
+ "software": [
+  {
+   "name": "llama.cpp（PrismML fork）llama-server",
+   "version": "prism-b10787（build 73bfe6cc4）",
+   "note": "官方預編譯 CUDA 12.8 版；Bonsai 的 PQ2_0 量化需要此 fork"
+  },
+  {
+   "name": "Strata",
+   "version": "0.1.45.3（server/terminal）",
+   "url": "https://github.com/Niko1221/Strata",
+   "note": "engine 在本機以 CUDA 12.9 自行編譯（官方預編譯版需要 driver ≥ 575.51）"
+  },
+  {
+   "name": "NVIDIA driver",
+   "version": "570.211.01（CUDA driver API 12.8）"
+  },
+  {
+   "name": "作業系統",
+   "version": "Ubuntu 22.04.4 LTS，kernel 5.15.0-190-generic（KVM 虛擬機）"
+  },
+  {
+   "name": "medbench（本評測程式）",
+   "version": "0.1.0；執行時 git fb9c356（Bonsai 第 2 段）、c4fad7e（Strata）",
+   "url": "https://github.com/u9401066/medqa-bench"
+  },
+  {
+   "name": "Python",
+   "version": "3.12.14（medbench 用戶端，httpx 0.28.1）"
+  }
+ ],
+ "co_resident": [
+  {
+   "name": "Clef-Flash 決策模型",
+   "detail": "upstream llama.cpp b11433，:8000，約 6.5 GB VRAM",
+   "during_runs": "兩次執行都常駐；評測期間沒有請求"
+  },
+  {
+   "name": "llama-mcp-router",
+   "detail": ":8001，對外 web UI / API 入口（轉送到 Bonsai :8081）",
+   "during_runs": "常駐；評測直接連 :8081，不經過 router"
+  },
+  {
+   "name": "llama-cot-sentinel",
+   "detail": ":8002",
+   "during_runs": "常駐；無請求"
+  }
+ ],
+ "launch": {
+  "Bonsai 27B PQ2_0": "llama-server -m Ternary-Bonsai-2-27B-Abliterated-v2-PQ2_0-MTP.gguf -ngl 99 -fa on -c 131072 -n -1 --jinja --cache-type-k q8_0 --cache-type-v q8_0 --host 0.0.0.0 --port 8081 --chat-template-kwargs {\"reasoning_effort\":\"medium\"} --cache-ram 24576 --reasoning-effort-allow low,medium,xhigh --reasoning-effort-fallback xhigh -b 2048 -ub 512 --spec-type draft-mtp --spec-draft-n-max 2 --mcp-servers-config mcp.json",
+  "Strata Qwen3.8-Flash-Next 125B IQ3_S": "python serve/server.py --engine strata --config configs/engine/strata-iq3_s-32k.json --port 8090（engine 參數見 configs/engine/strata-iq3_s-32k.json；一次一個請求，未加 --parallel）"
+ }
+}

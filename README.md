@@ -10,7 +10,7 @@
 - **速度與資源**：TTFT、延遲、單請求解碼速度、總吞吐；每秒取樣 VRAM／GPU 使用率／功耗／溫度、伺服器 RSS、系統 RAM、CPU，計算能耗（Wh/題，含扣除閒置功耗），並記錄共用伺服器上其他使用者的請求。
 - **報告**：`medbench report` 產生正式 Markdown 報告（方法、結果、配對比較、速度、資源、重現步驟）。
 
-最新報告：[reports/REPORT.md](reports/REPORT.md)（數據：[reports/REPORT.json](reports/REPORT.json)）
+最新報告：[reports/REPORT.docx](reports/REPORT.docx)（Word，給技術人員分享：含測試環境、模型檔案雜湊、參考基準、圖表）、[reports/REPORT.md](reports/REPORT.md)（Markdown）、數據 [reports/REPORT.json](reports/REPORT.json)、環境紀錄 [reports/environment.json](reports/environment.json)
 
 ## 結果摘要（2026-10-21，RTX 4090 KVM 虛擬機）
 
@@ -49,14 +49,16 @@
 
 ```bash
 git clone https://github.com/u9401066/medqa-bench && cd medqa-bench
-uv venv && uv pip install -e '.[test]'     # 或 python -m venv .venv && pip install -e '.[test]'
-.venv/bin/pytest -q                         # 33 個測試（解析器、統計、假伺服器端到端、中斷續跑）
+uv venv && uv pip install -e '.[test,report]'   # 或 python -m venv .venv && pip install -e '.[test,report]'（report = Word 報告用的 python-docx、matplotlib）
+.venv/bin/pytest -q                         # 34 個測試（解析器、統計、假伺服器端到端、中斷續跑、Word 報告）
 
 medbench prepare                                                    # 下載、驗證、正規化到 data/
 medbench run --config configs/bonsai27b-pq2-medium.json --sample 10 --out results/pilot-bonsai   # 先試跑
 medbench run --config configs/bonsai27b-pq2-medium.json             # 全部 3,686 題，可中斷續跑
 medbench score results/bonsai27b-pq2-medium results/strata-flashnext-iq3s-medium
 medbench report results/bonsai27b-pq2-medium results/strata-flashnext-iq3s-medium --notes reports/notes.md
+medbench env                                                       # 記錄主機環境到 reports/environment.json
+medbench docx results/bonsai27b-pq2-medium results/strata-flashnext-iq3s-medium --notes reports/notes.md   # Word 報告
 ```
 
 ### 設定檔（`configs/*.json`）
