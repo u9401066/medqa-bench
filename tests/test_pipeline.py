@@ -188,3 +188,33 @@ def test_session_without_end_is_closed_at_last_item():
     ok = [{"t_start": 10.0, "latency_s": 5.0}, {"t_start": 12.0, "latency_s": 9.0}, {"t_start": 105.0, "latency_s": 1.0}]
     out = _close_sessions([{"baseline_start": 0, "start": 5.0}, {"baseline_start": 90.0, "start": 100.0, "end": 110.0}], ok)
     assert out[0]["end"] == 21.0 and out[0]["end_inferred"] and out[1]["end"] == 110.0
+
+
+def test_docx_report(tmp_path, fake_server):
+    pytest.importorskip("docx")
+    pytest.importorskip("matplotlib")
+    import docx
+
+    data = _data(tmp_path)
+    runs = []
+    for name in ("m1", "m2"):
+        out = tmp_path / "results" / name
+        assert main(["--data", str(data), "run", "--config", str(_cfg(tmp_path, fake_server, name)), "--datasets", "medqa_usmle,pubmedqa",
+                     "--out", str(out), "--baseline-s", "0"]) == 0
+        runs.append(out)
+    notes = tmp_path / "notes.md"
+    notes.write_text("## 5. 測試環境與設定細節\n\n- **主機**：測試。\n  1. 子項目\n\n## 6. 討論\n\n### 6.4 結論\n\n1. 結論一。\n")
+    env = tmp_path / "environment.json"
+    assert main(["env", "--out", str(env)]) == 0 and "host" in json.loads(env.read_text())
+    out = tmp_path / "reports" / "REPORT.docx"
+    assert main(["--data", str(data), "docx", str(runs[0]), str(runs[1]), "--out", str(out), "--notes", str(notes), "--env", str(env)]) == 0
+    d = docx.Document(str(out))
+    heads = [p.text for p in d.paragraphs if p.style.name.startswith("Heading")]
+    for h in ("摘要", "1. 測試方法與環境", "1.2 參考基準", "1.4 受測系統與測試環境", "2. 正確率", "3. 速度", "4. 資源耗用",
+              "5. 測試環境與設定細節", "8. 重現步驟與資料檔案", "附錄 D：參考文獻與連結"):
+        assert h in heads, h
+    assert len(d.tables) >= 15 and len(d.inline_shapes) == 3
+    links = [r.target_ref for r in d.part.rels.values() if r.reltype.endswith("/hyperlink")]
+    assert "https://github.com/u9401066/medqa-bench" in links and any("arxiv.org" in u for u in links)
+    toc = [p.text for p in d.paragraphs if p.text in ("2. 正確率", "6.4 結論")]
+    assert toc.count("2. 正確率") == 2  # once in the table of contents, once as the heading

@@ -10,7 +10,6 @@ import asyncio
 import hashlib
 import json
 import os
-import platform
 import signal
 import subprocess
 import time
@@ -21,6 +20,7 @@ import httpx
 
 from . import __version__
 from .datasets import SOURCES, load, sha256
+from .envinfo import collect as collect_host
 from .monitor import Monitor
 from .prompts import PROMPT_VERSION, build_prompt, parse
 
@@ -90,18 +90,7 @@ def _git_rev() -> Optional[str]:
 
 
 def _host() -> Dict[str, Any]:
-    info: Dict[str, Any] = {"platform": platform.platform(), "python": platform.python_version(), "cpu": None, "ram_gib": None}
-    try:
-        with open("/proc/cpuinfo") as f:
-            info["cpu"] = next(line.split(":", 1)[1].strip() for line in f if line.startswith("model name"))
-        with open("/proc/meminfo") as f:
-            info["ram_gib"] = round(int(f.readline().split()[1]) / 1024 / 1024, 1)
-        out = subprocess.run(["nvidia-smi", "--query-gpu=name,memory.total,driver_version", "--format=csv,noheader"], capture_output=True,
-                             text=True, timeout=5).stdout.strip()
-        info["gpu"] = out
-    except Exception:  # noqa: BLE001
-        pass
-    return info
+    return collect_host()
 
 
 async def _server_info(client: httpx.AsyncClient, paths: List[str]) -> Dict[str, Any]:

@@ -17,6 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
+report = ["python-docx>=1.1", "matplotlib>=3.8"]
 
 [project.scripts]
 medbench = "medbench.cli:main"

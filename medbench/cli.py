@@ -35,6 +35,17 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--title", default="醫學問答評測：單張 RTX 4090 上的本地模型")
     p.add_argument("--notes", help="Markdown file appended as discussion/limitations")
 
+    p = sub.add_parser("docx", help="write the Word report for two or more runs (needs the [report] extra)")
+    p.add_argument("runs", nargs="+")
+    p.add_argument("--out", default="reports/REPORT.docx")
+    p.add_argument("--title", default="醫學問答評測報告")
+    p.add_argument("--notes", help="Markdown file with the discussion/limitations sections")
+    p.add_argument("--env", default="reports/environment.json", help="test environment record (medbench env)")
+    p.add_argument("--repo-url", default="https://github.com/u9401066/medqa-bench")
+
+    p = sub.add_parser("env", help="record this host (OS, CPU, RAM, GPU, driver, PCIe, disks) into an environment JSON")
+    p.add_argument("--out", default="reports/environment.json")
+
     a = ap.parse_args(argv)
     data = Path(a.data)
     if a.cmd == "prepare":
@@ -75,6 +86,29 @@ def main(argv: Optional[List[str]] = None) -> int:
 
         path = write_report([Path(r) for r in a.runs], data, Path(a.out), a.title, Path(a.notes) if a.notes else None)
         print(path)
+        return 0
+    if a.cmd == "docx":
+        try:
+            from .docx_report import write_docx
+        except ImportError as e:
+            print("medbench docx needs python-docx and matplotlib: pip install -e '.[report]' (%s)" % e, file=sys.stderr)
+            return 2
+        path = write_docx([Path(r) for r in a.runs], data, Path(a.out), a.title, Path(a.notes) if a.notes else None,
+                          Path(a.env) if a.env else None, a.repo_url)
+        print(path)
+        return 0
+    if a.cmd == "env":
+        import datetime
+
+        from .envinfo import collect
+
+        out = Path(a.out)
+        rec = json.loads(out.read_text(encoding="utf-8")) if out.exists() else {}
+        rec["collected_at"] = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+        rec["host"] = collect()
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(rec, indent=1, ensure_ascii=False), encoding="utf-8")
+        print(json.dumps(rec["host"], ensure_ascii=False))
         return 0
     return 1
 
